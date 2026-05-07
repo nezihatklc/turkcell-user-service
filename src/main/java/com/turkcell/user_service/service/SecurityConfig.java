@@ -1,30 +1,50 @@
-package com.turkcell.user_service;
+package com.turkcell.user_service.service;
 
+import com.turkcell.user_service.service.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// @Configuration → Spring'e "bu sınıfta Bean tanımları var" diyoruz
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    // @Bean → Spring bu metodu çalıştırır ve dönen nesneyi yönetir
-    // PasswordEncoder → şifreleri BCrypt algoritmasıyla hashler
+    // JWT filter'ı inject ediyoruz
+    private final JwtAuthFilter jwtAuthFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Tüm endpoint'lere erişime izin ver (geliştirme aşaması)
-    // İleride JWT ekleyince buraya güvenlik kuralları ekleyeceğiz
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // CSRF'yi kapat — REST API'lerde gerekmez
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+                // Hangi endpoint'ler açık, hangisi korumalı
+                .authorizeHttpRequests(auth -> auth
+                        // register ve login herkese açık
+                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        // diğer her şey token gerektirir
+                        .anyRequest().authenticated()
+                )
+
+                // Session tutma — JWT stateless çalışır
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // JWT filter'ı Spring Security'nin önüne ekle
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

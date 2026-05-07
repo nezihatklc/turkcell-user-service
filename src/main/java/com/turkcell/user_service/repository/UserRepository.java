@@ -11,4 +11,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // SELECT EXISTS(SELECT 1 FROM users WHERE email = ?)
     // Kayıt sırasında "bu email zaten var mı?" kontrolü için kullanacağız
     boolean existsByEmail(String email);
+    java.util.Optional<User> findByEmail(String email);
 }

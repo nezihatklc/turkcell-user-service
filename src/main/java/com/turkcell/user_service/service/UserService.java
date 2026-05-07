@@ -1,5 +1,7 @@
 package com.turkcell.user_service.service;
 
+import com.turkcell.user_service.dto.LoginRequest;
+import com.turkcell.user_service.dto.LoginResponse;
 import com.turkcell.user_service.dto.RegisterRequest;
 import com.turkcell.user_service.dto.UserResponse;
 import com.turkcell.user_service.entity.User;
@@ -9,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+
 
 // @Service → Spring'e "bu sınıf bir servis katmanıdır" diyoruz. Her sınıfta tek tek nesne oluşturmaya gerek kalmıyor.
 // Spring bunu otomatik yönetir, her yerden @Autowired ile kullanılabilir
@@ -72,6 +76,27 @@ public class UserService {
         response.setEmail(user.getEmail());
         // password set etmiyoruz!
         return response;
+    }
+
+    // Kullanıcı girişi — email ve şifre doğruysa token döndür
+
+    private final JwtService jwtService;
+    public LoginResponse login(LoginRequest request) {
+
+        // Email ile kullanıcıyı bul, yoksa hata fırlat
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email veya şifre hatalı!"));
+
+        // Şifre doğru mu kontrol et
+        // passwordEncoder.matches → düz metin ile hashlenmiş şifreyi karşılaştırır
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Email veya şifre hatalı!");
+        }
+
+        // Şifre doğruysa token üret ve döndür
+
+        String token = jwtService.generateToken(user.getEmail());
+        return new LoginResponse(token, user.getEmail());
     }
 }
 /* 1. Giriş değişti

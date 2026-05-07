@@ -1,5 +1,7 @@
 package com.turkcell.user_service.controller;
 
+import com.turkcell.user_service.dto.LoginRequest;
+import com.turkcell.user_service.dto.LoginResponse;
 import com.turkcell.user_service.dto.RegisterRequest;
 import com.turkcell.user_service.dto.UserResponse;
 import com.turkcell.user_service.service.UserService;
@@ -29,5 +31,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    // POST /api/users/login → giriş yap, token al
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse response = userService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
