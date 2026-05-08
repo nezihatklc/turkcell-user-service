@@ -31,10 +31,13 @@ public class SecurityConfig {
 
                 // Hangi endpoint'ler açık, hangisi korumalı
                 .authorizeHttpRequests(auth -> auth
-                        // register ve login herkese açık
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        // diğer her şey token gerektirir
-                        .anyRequest().authenticated()
+                // register ve login herkese açık
+                .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                // sadece admin tüm kullanıcıları görebilir
+                .requestMatchers("/api/users").hasRole("ADMIN")
+                // diğer her şey token gerektirir
+                .anyRequest().authenticated()
+
                 )
 
                 // Session tutma — JWT stateless çalışır

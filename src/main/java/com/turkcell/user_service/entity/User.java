@@ -23,4 +23,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+
+    // Kullanıcı rolü — USER veya ADMIN
+    // Varsayılan olarak USER atanır
+    @Column(nullable = false)
+    private String role = "USER";
 }

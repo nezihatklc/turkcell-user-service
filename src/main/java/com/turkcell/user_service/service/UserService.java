@@ -45,6 +45,8 @@ public class UserService {
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
 
+        // Role belirtilmemişse USER ata
+        user.setRole(request.getRole() != null ? request.getRole() : "USER");
 
         // Şifreyi düz metin olarak saklamıyoruz — güvenlik için hashle
         // Örnek: "123456" → "$2a$10$xyz..." şeklinde saklanır
@@ -95,7 +97,7 @@ public class UserService {
 
         // Şifre doğruysa token üret ve döndür
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail() , user.getRole());
         return new LoginResponse(token, user.getEmail());
     }
 }

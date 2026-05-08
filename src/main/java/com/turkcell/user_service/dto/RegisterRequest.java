@@ -25,4 +25,7 @@ public class RegisterRequest {
     @NotBlank(message = "Şifre boş olamaz")
     @Size(min = 6, message = "Şifre en az 6 karakter olmalı")
     private String password;
+
+    // Opsiyonel — boş gelirse varsayılan USER atanır
+    private String role;
 }

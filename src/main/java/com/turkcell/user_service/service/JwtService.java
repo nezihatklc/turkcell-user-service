@@ -28,12 +28,14 @@ public class JwtService {
     }
 
     // Kullanıcı email'i için token üret
-    public String generateToken(String email) {
+    // Kullanıcı email'i ve role'ü için token üret
+    public String generateToken(String email, String role) {
         return Jwts.builder()
-                .setSubject(email)          // token'ın sahibi
-                .setIssuedAt(new Date())     // token oluşturulma zamanı
-                .setExpiration(new Date(System.currentTimeMillis() + expiration)) // bitiş zamanı
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // imzala
+                .setSubject(email)
+                .claim("role", role)          // role bilgisini token'a ekle
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -60,5 +62,9 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String extractRole(String token) {
+        return extractClaims(token).get("role", String.class);
     }
 }
