@@ -33,6 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                 // register ve login herkese açık
                 .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                                // Swagger endpoint'leri herkese açık
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 // sadece admin tüm kullanıcıları görebilir
                 .requestMatchers("/api/users").hasRole("ADMIN")
                 // diğer her şey token gerektirir
