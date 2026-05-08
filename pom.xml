@@ -70,6 +70,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Input validation için -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -101,5 +107,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>
