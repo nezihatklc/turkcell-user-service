@@ -28,4 +28,3 @@ jobs:
 
       - name: Build and test
         run: mvn clean test -DskipTests
-        working-directory: user-service/user-service
