@@ -1,6 +1,5 @@
 name: CI Pipeline
 
-# Her push ve pull request'te çalış
 on:
   push:
     branches: [ main ]
@@ -12,26 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Kodu indir
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Java 17 kur
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # Maven cache — her seferinde indirmemek için
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-      # Build ve testleri çalıştır
-        # Build ve testleri çalıştır
-          -name: Build and test
-          run: mvn clean test -DskipTests
-          working-directory: user-service/user-service
+      - name: Build and test
+        run: mvn clean test -DskipTests
+        working-directory: user-service/user-service
