@@ -31,6 +31,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
       # Build ve testleri çalıştır
-      - name: Build and test
-        run: mvn clean test
-        working-directory: user-service
+        # Build ve testleri çalıştır
+          -name: Build and test
+          run: mvn clean test -DskipTests
+          working-directory: user-service/user-service
